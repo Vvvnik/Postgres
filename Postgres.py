@@ -1,10 +1,10 @@
 import psycopg2
 
 con = psycopg2.connect(
-  database="my",
-  user="one",
+  database="vvvnik",
+  user="postgreadmin",
   password="123",
-  host="127.0.0.1",
+  host="192.168.0.150",
   port="5432"
 )
 print("Database opened successfully")
