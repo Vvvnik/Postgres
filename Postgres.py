@@ -1,3 +1,5 @@
+# Connect into DB on the PC Саша
+
 import psycopg2
 
 con = psycopg2.connect(
