@@ -1,0 +1,156 @@
+﻿postgres@WS-7104:~$ psql -h localhost -U two -d my
+Пароль пользователя two: 
+
+my=# create database shop
+my-# ;
+CREATE DATABASE
+my=# \c shop
+SSL-соединение (протокол: TLSv1.3, шифр: TLS_AES_256_GCM_SHA384, бит: 256, сжатие: выкл.)
+Вы подключены к базе данных "shop" как пользователь "two".
+
+shop=# create table customer(
+shop(# id serial primary key,
+shop(# name varchar(255),
+shop(# phone varchar(30),
+shop(# email varchar(255)
+shop(# );
+CREATE TABLE
+shop=# \d
+                     Список отношений
+ Схема  |       Имя       |        Тип         | Владелец 
+--------+-----------------+--------------------+----------
+ public | customer        | таблица            | two
+ public | customer_id_seq | последовательность | two
+(2 строки)
+
+shop=# \d customer
+                                           Таблица "public.customer"
+ Столбец |          Тип           | Правило сортировки | Допустимость NULL |             По умолчанию             
+---------+------------------------+--------------------+-------------------+--------------------------------------
+ id      | integer                |                    | not null          | nextval('customer_id_seq'::regclass)
+ name    | character varying(255) |                    |                   | 
+ phone   | character varying(30)  |                    |                   | 
+ email   | character varying(255) |                    |                   | 
+Индексы:
+    "customer_pkey" PRIMARY KEY, btree (id)
+
+shop=# create table product(
+shop(# id serial primary key,
+shop(# name varchar(255),
+shop(# description text,
+shop(# price integer);
+CREATE TABLE
+shop=# \d
+                     Список отношений
+ Схема  |       Имя       |        Тип         | Владелец 
+--------+-----------------+--------------------+----------
+ public | customer        | таблица            | two
+ public | customer_id_seq | последовательность | two
+ public | product         | таблица            | two
+ public | product_id_seq  | последовательность | two
+(4 строки)
+
+
+shop=# \d product
+                                             Таблица "public.product"
+   Столбец   |          Тип           | Правило сортировки | Допустимость NULL |            По умолчанию             
+-------------+------------------------+--------------------+-------------------+-------------------------------------
+ id          | integer                |                    | not null          | nextval('product_id_seq'::regclass)
+ name        | character varying(255) |                    |                   | 
+ description | text                   |                    |                   | 
+ price       | integer                |                    |                   | 
+Индексы:
+    "product_pkey" PRIMARY KEY, btree (id)
+    
+shop=# \d product
+shop=# create table product_photo(
+shop(# id serial primary key,
+shop(# url varchar(255),
+shop(# product_id integer references product(id));
+CREATE TABLE
+
+shop=# \d
+                       Список отношений
+ Схема  |         Имя          |        Тип         | Владелец 
+--------+----------------------+--------------------+----------
+ public | customer             | таблица            | two
+ public | customer_id_seq      | последовательность | two
+ public | product              | таблица            | two
+ public | product_id_seq       | последовательность | two
+ public | product_photo        | таблица            | two
+ public | product_photo_id_seq | последовательность | two
+(6 строк)
+
+shop=# \d product_photo
+                                             Таблица "public.product_photo"
+  Столбец   |          Тип           | Правило сортировки | Допустимость NULL |               По умолчанию                
+------------+------------------------+--------------------+-------------------+-------------------------------------------
+ id         | integer                |                    | not null          | nextval('product_photo_id_seq'::regclass)
+ url        | character varying(255) |                    |                   | 
+ product_id | integer                |                    |                   | 
+Индексы:
+    "product_photo_pkey" PRIMARY KEY, btree (id)
+Ограничения внешнего ключа:
+    "product_photo_product_id_fkey" FOREIGN KEY (product_id) REFERENCES product(id)
+
+shop=# create table cart(
+shop(# customer_id integer references customer(id),
+shop(# id serial primary key);
+CREATE TABLE
+
+shop=# \d
+                       Список отношений
+ Схема  |         Имя          |        Тип         | Владелец 
+--------+----------------------+--------------------+----------
+ public | cart                 | таблица            | two
+ public | cart_id_seq          | последовательность | two
+ public | customer             | таблица            | two
+ public | customer_id_seq      | последовательность | two
+ public | product              | таблица            | two
+ public | product_id_seq       | последовательность | two
+ public | product_photo        | таблица            | two
+ public | product_photo_id_seq | последовательность | two
+(8 строк)
+
+shop=# \d cart
+                                       Таблица "public.cart"
+   Столбец   |   Тип   | Правило сортировки | Допустимость NULL |           По умолчанию           
+-------------+---------+--------------------+-------------------+----------------------------------
+ customer_id | integer |                    |                   | 
+ id          | integer |                    | not null          | nextval('cart_id_seq'::regclass)
+Индексы:
+    "cart_pkey" PRIMARY KEY, btree (id)
+Ограничения внешнего ключа:
+    "cart_customer_id_fkey" FOREIGN KEY (customer_id) REFERENCES customer(id)
+
+shop=# create table cart_product(
+cart_id integer references cart(id),
+product_id integer references product(id));
+CREATE TABLE
+shop=# \d
+                       Список отношений
+ Схема  |         Имя          |        Тип         | Владелец 
+--------+----------------------+--------------------+----------
+ public | cart                 | таблица            | two
+ public | cart_id_seq          | последовательность | two
+ public | cart_product         | таблица            | two
+ public | customer             | таблица            | two
+ public | customer_id_seq      | последовательность | two
+ public | product              | таблица            | two
+ public | product_id_seq       | последовательность | two
+ public | product_photo        | таблица            | two
+ public | product_photo_id_seq | последовательность | two
+(9 строк)
+
+shop=# \d cart_product
+                        Таблица "public.cart_product"
+  Столбец   |   Тип   | Правило сортировки | Допустимость NULL | По умолчанию 
+------------+---------+--------------------+-------------------+--------------
+ cart_id    | integer |                    |                   | 
+ product_id | integer |                    |                   | 
+Ограничения внешнего ключа:
+    "cart_product_cart_id_fkey" FOREIGN KEY (cart_id) REFERENCES cart(id)
+    "cart_product_product_id_fkey" FOREIGN KEY (product_id) REFERENCES product(id)
+
+    
+
