@@ -1,0 +1,45 @@
+
+https://www.youtube.com/watch?v=FLiKTJqyyvs&t=438s
+
+https://www.youtube.com/redirect?event=video_description&redir_token=QUFFLUhqbHpkWlFjbG92bFdPcUoxeGhaQ05qUl95M3poUXxBQ3Jtc0tuU29JYW1lbEh3RHFJMG9JZmZ0ek1JZzBSOWhHSm81UTJUd21JRV9nNElUaVpwZTlWY21zUE1KOFBzeWVYdlZpYnpjR0p4TFVHWnpoLXBMclFtZzNpY0Q2MTlXRFdTUEdoRUtGanhDMExEUXVoT2Q5OA&q=https%3A%2F%2Fgithub.com%2Falexey-goloburdin%2Fdebian-set-up-for-django
+
+
+Соединяем два компа через SSH.
+чтобы не вводить пароль устанавливаем ключ
+
+vvv@WS-7104:~$ ssh-keygen
+vvv@WS-7104:~$ ssh-copy-id vvv@192.168.0.150
+
+vvv@Home:~$ sudo apt-get update
+vvv@Home:~$ sudo apt-get install -y vim mosh tmux htop git curl wget unzip zip gcc build-essential make
+
+vvv@Home:~$ sudo vim /etc/ssh/sshd_config
+#-----------------------------------
+добавляем вниз :
+AllowUsers www
+PermitRootLogin no
+PasswordAuthentication no
+#-----------------------------------
+vvv@Home:~$ sudo service ssh restart
+vvv@Home:~$ exit
+vvv@WS-7104:~$ ssh vvv@192.168.0.150
+входим без пароля 
+vvv@Home:~$ 
+
+Устанавливаем пакеты без Python (для моего комп)
+sudo apt-get install -y zsh tree redis-server nginx zlib1g-dev libbz2-dev libreadline-dev llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev liblzma-dev libxslt-dev libffi-dev libssl-dev python-dev gnumeric libsqlite3-dev libpq-dev libxml2-dev libxslt1-dev libjpeg-dev libfreetype6-dev libcurl4-openssl-dev supervisor
+
+Устанавливаем пакеты c Python (для нового сервера)
+sudo apt-get install -y zsh tree redis-server nginx zlib1g-dev libbz2-dev libreadline-dev llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev liblzma-dev python3-dev python-imaging python3-lxml libxslt-dev python-libxml2 python-libxslt1 libffi-dev libssl-dev python-dev gnumeric libsqlite3-dev libpq-dev libxml2-dev libxslt1-dev libjpeg-dev libfreetype6-dev libcurl4-openssl-dev supervisor
+
+vim ~/.zshrc
+    alias cls="clear"
+    
+➜  ~ chsh -s $(which zsh)
+Пароль: 
+➜  ~ which zsh  
+/usr/bin/zsh
+➜  ~ 
+
+
+
