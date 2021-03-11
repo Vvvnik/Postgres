@@ -6,7 +6,7 @@ con = psycopg2.connect(
   database="vvvnik",
   user="postgreadmin",
   password="123",
-  host="192.168.0.150",
+  host="localhost",
   port="5432"
 )
 print("Database opened successfully")
